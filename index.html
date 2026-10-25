@@ -1,1 +1,67 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>اختيار الملابس</title><style>*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial;background:linear-gradient(135deg,#fceaf4,#f1eafa,#fff7ee);color:#72447d;min-height:100vh;text-align:center}.page{max-width:1100px;margin:24px auto;padding:22px}.heading{background:#fffaf3;border:2px solid #dfb6d4;border-radius:22px;max-width:680px;margin:20px auto;padding:20px;box-shadow:0 6px #ead8ed}.heading:before{content:'🎀';display:block;font-size:30px}.heading h1{margin:4px;font-size:clamp(26px,4vw,40px)}.frame{background:#fffafd;border:2px solid #e7c5df;border-radius:20px;padding:12px;margin:20px auto;max-width:1000px}video{width:100%;aspect-ratio:16/9;background:#28202b;border-radius:12px}button{background:#fff8fa;border:1px solid #dbb7da;border-radius:14px;padding:13px 18px;margin:4px;color:#72447d;font-size:16px;cursor:pointer}button:hover{background:#f3e3f3}.note{font-size:14px;color:#917699}#home{display:none}#home img{max-width:100%;border-radius:16px}</style></head><body><section id="home" class="page" style="display:block"><h1>اختيار الملابس</h1><img src="assets/home.png" alt="الواجهة الرئيسية المعتمدة"><p><button onclick="view('rules')">القوانين الصفية</button></p></section><section id="rules" class="page" style="display:none"><div class="heading"><h1>القوانين الصفية</h1><p>المهارات الحياتية والأسرية | الصف السادس الابتدائي</p></div><div class="frame"><video id="video" controls playsinline preload="metadata" src="assets/class-rules.mp4"></video></div><nav><button onclick="view('home')">الرئيسية</button><button onclick="view('home')">السابق</button><button onclick="view('index')">الفهرس</button><button onclick="view('objectives')">التالي</button><button onclick="restart()">إعادة الفيديو</button></nav><p class="note">النسخة التجريبية: ملفات الصورة والفيديو قيد الرفع</p></section><section id="index" class="page" style="display:none"><div class="heading"><h1>فهرس الدرس</h1></div><p>قيد الإعداد بعد اعتماد شاشة القوانين</p><button onclick="view('rules')">القوانين الصفية</button></section><section id="objectives" class="page" style="display:none"><div class="heading"><h1>أهداف الدرس</h1></div><p>قيد الإعداد</p><button onclick="view('rules')">السابق</button></section><script>function view(id){document.getElementById('video').pause();for(const x of ['home','rules','index','objectives'])document.getElementById(x).style.display=x===id?'block':'none'}function restart(){const v=document.getElementById('video');v.currentTime=0;v.play().catch(()=>{})}window.addEventListener("DOMContentLoaded",()=>view("home"));</script></body></html>
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>اختيار الملابس | الصف السادس الابتدائي</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Tahoma,Arial,sans-serif;background:linear-gradient(135deg,#fceaf4,#f1eafa,#fff7ee);color:#72447d;text-align:center}
+.page{max-width:1140px;margin:0 auto;padding:clamp(8px,2vw,22px);min-height:100vh}
+.page[hidden]{display:none!important}
+.home-art{position:relative;width:100%;max-width:1080px;margin:0 auto;line-height:0}
+.home-art img{display:block;width:100%;height:auto;border-radius:16px}
+.hotspot{position:absolute;display:block;background:transparent;border:0;box-shadow:none;border-radius:14%;cursor:pointer;touch-action:manipulation}
+.hotspot:focus-visible{outline:4px solid #76358e;outline-offset:2px;background:#fff3}
+.hotspot:active{background:#fff4}
+.top{top:40%;height:21%}.bottom{top:62%;height:22%}
+.left{left:19.3%;width:20.6%}.middle{left:40%;width:19.7%}.right{left:60%;width:20.8%}
+.start{left:36.5%;top:84.5%;width:27%;height:12.5%;border-radius:30px}
+.heading{position:relative;background:#fffaf3;border:2px solid #dfb6d4;border-radius:22px;max-width:680px;margin:20px auto;padding:18px;box-shadow:0 6px #ead8ed}
+.heading:before{content:'🎀';display:block;font-size:30px}
+.heading h1{margin:4px;font-size:clamp(24px,4vw,38px)}
+.frame{background:#fffafd;border:2px solid #e7c5df;border-radius:20px;padding:12px;margin:20px auto;max-width:1000px}
+video{display:block;width:100%;aspect-ratio:16/9;background:#28202b;border-radius:12px}
+nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+nav button,.link-btn{background:#fff8fa;border:1px solid #dbb7da;border-radius:14px;padding:12px 16px;color:#72447d;font-size:16px;cursor:pointer}
+nav button:hover,.link-btn:hover{background:#f3e3f3}
+.note{font-size:14px;color:#917699}
+.panel{max-width:650px;margin:40px auto;background:#fffaf6;border:1px solid #e2bfdc;border-radius:20px;padding:28px;line-height:1.8}
+@media(max-width:600px){.page{padding:10px}.heading{margin:12px auto}.frame{padding:6px}nav button{padding:10px;font-size:14px}}
+</style>
+</head>
+<body>
+<section id="home" class="page">
+<div class="home-art">
+<img src="assets/home.png" alt="الواجهة الرئيسية المعتمدة لدرس اختيار الملابس">
+<button class="hotspot top right" aria-label="أهداف الدرس" title="أهداف الدرس" onclick="view('objectives')"></button>
+<button class="hotspot top middle" aria-label="القوانين الصفية" title="القوانين الصفية" onclick="view('rules')"></button>
+<button class="hotspot top left" aria-label="أنشطة تفاعلية" title="أنشطة تفاعلية" onclick="view('activities')"></button>
+<button class="hotspot bottom right" aria-label="لباسي من هدي ديني" title="لباسي من هدي ديني" onclick="view('religion')"></button>
+<button class="hotspot bottom middle" aria-label="زيي هويتي" title="زيي هويتي" onclick="view('identity')"></button>
+<button class="hotspot bottom left" aria-label="فهرس الدرس" title="فهرس الدرس" onclick="view('index')"></button>
+<button class="hotspot start" aria-label="ابدئي الدرس" title="ابدئي الدرس" onclick="view('objectives')"></button>
+</div>
+</section>
+<section id="rules" class="page" hidden>
+<header class="heading"><h1>القوانين الصفية</h1><p>المهارات الحياتية والأسرية | الصف السادس الابتدائي</p></header>
+<div class="frame"><video id="video" controls playsinline preload="metadata" src="assets/class-rules.mp4"></video></div>
+<nav aria-label="التنقل"><button onclick="view('home')">الرئيسية</button><button onclick="view('home')">السابق</button><button onclick="view('index')">الفهرس</button><button onclick="view('objectives')">التالي</button><button onclick="restart()">إعادة الفيديو</button></nav>
+</section>
+<section id="placeholder" class="page" hidden>
+<header class="heading"><h1 id="sectionTitle"></h1></header>
+<div class="panel"><p>سيُضاف محتوى هذا القسم بعد اعتماده، مع الحفاظ على التصميم الموحد للدرس.</p></div>
+<nav aria-label="التنقل"><button onclick="view('home')">الرئيسية</button><button onclick="view('rules')">القوانين الصفية</button><button onclick="view('index')">الفهرس</button></nav>
+</section>
+<script>
+const names={objectives:'أهداف الدرس',activities:'أنشطة تفاعلية',religion:'لباسي من هدي ديني',identity:'زيي هويتي',index:'فهرس الدرس'};
+function view(id){
+ const v=document.getElementById('video');v.pause();
+ const target=(id==='home'||id==='rules')?id:'placeholder';
+ for(const el of document.querySelectorAll('section.page'))el.hidden=el.id!==target;
+ if(target==='placeholder')document.getElementById('sectionTitle').textContent=names[id]||'الدرس';
+ window.scrollTo(0,0);
+}
+function restart(){const v=document.getElementById('video');v.currentTime=0;v.play().catch(()=>{});}
+document.addEventListener('DOMContentLoaded',()=>view('home'));
+</script>
+</body></html>
