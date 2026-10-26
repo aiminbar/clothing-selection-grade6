@@ -223,22 +223,24 @@ function selectSkinDress(button){const dress=document.getElementById('skinDress'
 function answerSkin(correct){lessonFeedbackVoice(correct);const feedback=document.getElementById('skinFeedback');feedback.textContent=correct?'أحسنتِ! 🌸 لكل طالبة ذوقها، ويمكننا احترام اختلاف الاختيارات.':'فكّري مرة أخرى 🌷 تختلف الأذواق، وليس من الضروري أن نختار جميعًا اللون نفسه.';document.querySelectorAll('.skin-answer button').forEach(b=>b.disabled=true);}
 function resetSkin(){document.querySelectorAll('.skin-answer button').forEach(b=>b.disabled=false);document.getElementById('skinFeedback').textContent='';}
 
-/* أصوات تشجيعية عربية قصيرة دون موسيقى */
+/* الأصوات المسجلة المعتمدة للتشجيع والمحاولة مجددًا */
 let lessonVoiceEnabled=true;
+const lessonSounds={correct:new Audio('assets/correct.mp3'),retry:new Audio('assets/retry.mp3')};
+Object.values(lessonSounds).forEach(audio=>{audio.preload='auto';audio.volume=1;});
 function lessonFeedbackVoice(correct){
- if(!lessonVoiceEnabled||!('speechSynthesis' in window))return;
+ if(!lessonVoiceEnabled)return;
  try{
-  window.speechSynthesis.cancel();
-  const phrase=correct?'أحسنتِ! إجابة صحيحة!':'حاولي مرة أخرى، أنتِ تستطيعين!';
-  const u=new SpeechSynthesisUtterance(phrase);
-  u.lang='ar-SA';u.rate=0.88;u.pitch=1.08;u.volume=0.9;
-  const voices=window.speechSynthesis.getVoices();
-  const arabic=voices.find(v=>v.lang.toLowerCase()==='ar-sa')||voices.find(v=>v.lang.toLowerCase().startsWith('ar'));
-  if(arabic)u.voice=arabic;
-  window.speechSynthesis.speak(u);
+  Object.values(lessonSounds).forEach(audio=>{audio.pause();audio.currentTime=0;});
+  const audio=correct?lessonSounds.correct:lessonSounds.retry;
+  const result=audio.play();if(result&&typeof result.catch==='function')result.catch(()=>{});
  }catch(e){}
 }
-function toggleLessonVoice(){lessonVoiceEnabled=!lessonVoiceEnabled;const b=document.getElementById('lessonVoiceToggle');if(b){b.textContent=lessonVoiceEnabled?'🔊':'🔇';b.setAttribute('aria-label',lessonVoiceEnabled?'إيقاف أصوات التشجيع':'تشغيل أصوات التشجيع');b.setAttribute('aria-pressed',String(lessonVoiceEnabled));}if(!lessonVoiceEnabled&&'speechSynthesis' in window)window.speechSynthesis.cancel();}
+function toggleLessonVoice(){
+ lessonVoiceEnabled=!lessonVoiceEnabled;
+ const b=document.getElementById('lessonVoiceToggle');
+ if(b){b.textContent=lessonVoiceEnabled?'🔊':'🔇';b.setAttribute('aria-label',lessonVoiceEnabled?'إيقاف أصوات التشجيع':'تشغيل أصوات التشجيع');b.setAttribute('aria-pressed',String(lessonVoiceEnabled));}
+ if(!lessonVoiceEnabled)Object.values(lessonSounds).forEach(audio=>{audio.pause();audio.currentTime=0;});
+}
 function answerOccasion(ok){lessonFeedbackVoice(ok);document.getElementById('occasionResult').textContent=ok?'أحسنتِ! ملابس المنزل مريحة وقطنية ومتنوعة الألوان. 🌷':'حاولي مرة أخرى، فكّري في الملابس المناسبة للراحة في المنزل.';}
 
 const applicationsQuestions=[
