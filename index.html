@@ -82,7 +82,7 @@ nav button:hover,.link-btn:hover{background:#f3e3f3}
 <img src="assets/home.png" alt="الواجهة الرئيسية المعتمدة لدرس اختيار الملابس">
 <button class="hotspot top right" aria-label="أهداف الدرس" title="أهداف الدرس" onclick="view('objectives')"></button>
 <button class="hotspot top middle" aria-label="القوانين الصفية" title="القوانين الصفية" onclick="view('rules')"></button>
-<button class="hotspot top left" aria-label="أنشطة تفاعلية" title="أنشطة تفاعلية" onclick="view('activities')"></button>
+<button class="hotspot top left" aria-label="أنشطة تفاعلية" title="أنشطة تفاعلية" onclick="view('applications')"></button>
 <button class="hotspot bottom right" aria-label="لباسي من هدي ديني" title="لباسي من هدي ديني" onclick="view('religion')"></button>
 <button class="hotspot bottom middle" aria-label="زيي هويتي" title="زيي هويتي" onclick="view('identity')"></button>
 <button class="hotspot bottom left" aria-label="فهرس الدرس" title="فهرس الدرس" onclick="view('index')"></button>
@@ -271,7 +271,7 @@ teacherCanvas.addEventListener('pointercancel',teacherFinish);
 window.addEventListener('resize',teacherResize);
 teacherResize();
 
-const names={objectives:'أهداف الدرس',modesty:'مواصفات اللباس الشرعي',traditions:'العادات والتقاليد',activity1:'النشاط الأول',activity2:'النشاط الثاني',season:'الموسم: الصيف والشتاء',activity3:'النشاط الثالث',age:'العمر',skin:'لون البشرة',body:'القوام',occasion:'المناسبة',applications:'التطبيقات العامة',objectives:'أهداف الدرس',activities:'أنشطة تفاعلية',religion:'لباسي من هدي ديني',identity:'زيي هويتي',index:'فهرس الدرس'};
+const names={objectives:'أهداف الدرس',modesty:'مواصفات اللباس الشرعي',traditions:'العادات والتقاليد',activity1:'النشاط الأول',activity2:'النشاط الثاني',season:'الموسم: الصيف والشتاء',activity3:'النشاط الثالث',age:'العمر',skin:'لون البشرة',body:'القوام',occasion:'المناسبة',applications:'التطبيقات العامة',objectives:'أهداف الدرس',activities:'التطبيقات العامة',religion:'لباسي من هدي ديني',identity:'زيي هويتي',index:'فهرس الدرس'};
 const lessonOrder=['objectives','modesty','traditions','activity1','activity2','season','activity3','age','skin','body','occasion','applications'];
 let currentSection='objectives';
 function goNext(){const i=lessonOrder.indexOf(currentSection);view(lessonOrder[Math.min(i+1,lessonOrder.length-1)]||'objectives');}
