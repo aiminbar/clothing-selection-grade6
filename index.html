@@ -27,7 +27,7 @@ nav button:hover,.link-btn:hover{background:#f3e3f3}
 .note{font-size:14px;color:#917699}
 .panel{max-width:650px;margin:40px auto;background:#fffaf6;border:1px solid #e2bfdc;border-radius:20px;padding:28px;line-height:1.8}
 @media(max-width:600px){.page{padding:10px}.heading{margin:12px auto}.frame{padding:6px}nav button{padding:10px;font-size:14px}}
-.site-footer{width:min(100% - 24px,1080px);margin:18px auto 24px;padding:15px 12px;text-align:center;color:#846887;font-size:13px;line-height:1.8;direction:rtl;border-top:1px solid #e5cde3;letter-spacing:.1px}body{display:flex;flex-direction:column}main{flex:1;width:100%}.page{min-height:auto!important}#home{padding-bottom:0}.home-art{margin-bottom:0}</style>
+.site-footer{width:min(100% - 24px,1080px);margin:18px auto 24px;padding:15px 12px;text-align:center;color:#846887;font-size:13px;line-height:1.8;direction:rtl;border-top:1px solid #e5cde3;letter-spacing:.1px}body{display:flex;flex-direction:column}main{flex:1;width:100%}.page{min-height:auto!important}#home{padding-bottom:0}.home-art{margin-bottom:0}.lesson-index{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;max-width:850px;margin:22px auto}.lesson-index button{border:1px solid #e0c0db;border-radius:15px;background:#fffaf5;padding:16px 12px;color:#72447d;font:inherit;cursor:pointer}</style>
 </head>
 <body>
 <main>
@@ -50,17 +50,17 @@ nav button:hover,.link-btn:hover{background:#f3e3f3}
 </section>
 <section id="placeholder" class="page" hidden>
 <header class="heading"><h1 id="sectionTitle"></h1></header>
-<div class="panel"><p>سيُضاف محتوى هذا القسم بعد اعتماده، مع الحفاظ على التصميم الموحد للدرس.</p></div>
+<div id="lessonIndex" class="lesson-index" hidden><button onclick="view('objectives')">1. أهداف الدرس</button><button onclick="view('modesty')">2. مواصفات اللباس الشرعي</button><button onclick="view('traditions')">3. العادات والتقاليد</button><button onclick="view('activity1')">4. النشاط الأول</button><button onclick="view('activity2')">5. النشاط الثاني</button><button onclick="view('season')">6. الموسم: الصيف والشتاء</button><button onclick="view('activity3')">7. النشاط الثالث</button><button onclick="view('age')">8. العمر</button><button onclick="view('skin')">9. لون البشرة</button><button onclick="view('body')">10. القوام</button><button onclick="view('occasion')">11. المناسبة</button><button onclick="view('applications')">12. التطبيقات العامة</button></div><div id="pendingContent" class="panel"><p>سيُضاف محتوى هذا القسم من الكتاب المدرسي المعتمد.</p></div>
 <nav aria-label="التنقل"><button onclick="view('home')">الرئيسية</button><button onclick="view('rules')">القوانين الصفية</button><button onclick="view('index')">الفهرس</button></nav>
 </section>
 </main>
 <script>
-const names={objectives:'أهداف الدرس',activities:'أنشطة تفاعلية',religion:'لباسي من هدي ديني',identity:'زيي هويتي',index:'فهرس الدرس'};
+const names={objectives:'أهداف الدرس',modesty:'مواصفات اللباس الشرعي',traditions:'العادات والتقاليد',activity1:'النشاط الأول',activity2:'النشاط الثاني',season:'الموسم: الصيف والشتاء',activity3:'النشاط الثالث',age:'العمر',skin:'لون البشرة',body:'القوام',occasion:'المناسبة',applications:'التطبيقات العامة',objectives:'أهداف الدرس',activities:'أنشطة تفاعلية',religion:'لباسي من هدي ديني',identity:'زيي هويتي',index:'فهرس الدرس'};
 function view(id){
  const v=document.getElementById('video');v.pause();
  const target=(id==='home'||id==='rules')?id:'placeholder';
  for(const el of document.querySelectorAll('section.page'))el.hidden=el.id!==target;
- if(target==='placeholder')document.getElementById('sectionTitle').textContent=names[id]||'الدرس';
+ if(target==='placeholder'){document.getElementById('sectionTitle').textContent=names[id]||'الدرس';document.getElementById('lessonIndex').hidden=id!=='index';document.getElementById('pendingContent').hidden=id==='index';}
  window.scrollTo(0,0);
 }
 function restart(){const v=document.getElementById('video');v.currentTime=0;v.play().catch(()=>{});}
