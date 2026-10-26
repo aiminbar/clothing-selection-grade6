@@ -36,9 +36,46 @@ nav button:hover,.link-btn:hover{background:#f3e3f3}
 
 .applications-wrap{position:relative}.lesson-voice-float{position:absolute;top:10px;left:12px;width:44px;height:44px;border-radius:50%;background:#fff9fc;border:1.5px solid #e5c6df;color:#7b5087;font-size:22px;display:grid;place-items:center;cursor:pointer;box-shadow:0 3px 8px #80508018;z-index:2}.lesson-voice-float:focus-visible{outline:3px solid #a76caa}.applications-intro{padding-left:64px}@media(max-width:600px){.lesson-voice-float{top:8px;left:8px;width:40px;height:40px}.applications-intro{padding-left:52px}}
 .lesson-voice-nav{border-radius:50%!important;min-width:43px;height:43px;padding:6px!important;font-size:20px!important;display:inline-grid;place-items:center;background:#fffafc!important;border:1.5px solid #dfb7d9!important}
+
+/* أداة قلم المعلمة - طبقة شفافة فوق جميع صفحات الدرس */
+#teacherDrawCanvas{position:fixed;inset:0;width:100vw;height:100dvh;z-index:10010;pointer-events:none;touch-action:none}
+#teacherDrawCanvas.teacher-drawing{pointer-events:auto;cursor:crosshair}
+#teacherPenButton{position:fixed;left:16px;bottom:18px;z-index:10030;width:48px;height:48px;border:2px solid #d9a7cf;border-radius:50%;background:#fffafc;color:#71407d;font-size:24px;box-shadow:0 4px 16px #7c4d8140;cursor:pointer}
+#teacherPenButton[aria-expanded="true"]{background:#f4d7e9}
+#teacherPenPanel{position:fixed;left:16px;bottom:76px;z-index:10030;max-width:min(340px,calc(100vw - 32px));padding:12px;border:2px solid #e2badb;border-radius:18px;background:#fffafcf7;box-shadow:0 8px 24px #7c4d8130;direction:rtl;text-align:right}
+#teacherPenPanel[hidden]{display:none!important}
+.teacher-tools-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+#teacherPenPanel button{border:1px solid #e1bedc;border-radius:10px;padding:8px 10px;background:#fff;color:#72447d;font:inherit;font-size:13px;cursor:pointer}
+#teacherPenPanel button[aria-pressed="true"]{background:#eecce5;border-color:#b46ea9}
+#teacherPenPanel .teacher-swatch{width:31px;height:31px;border-radius:50%;padding:0;border:2px solid #fff;outline:1px solid #d8b7d5}
+#teacherPenPanel .teacher-swatch[aria-pressed="true"]{outline:3px solid #85518c}
+#teacherPenPanel .teacher-close{margin-right:auto;font-size:18px}
+@media(max-width:600px){#teacherPenButton{left:10px;bottom:12px}#teacherPenPanel{left:10px;bottom:70px}}
 </style>
 </head>
 <body>
+
+<!-- أدوات المعلمة العامة: الرسم لا يغيّر عناصر الدرس -->
+<canvas id="teacherDrawCanvas" aria-label="طبقة رسم المعلمة"></canvas>
+<button id="teacherPenButton" type="button" aria-label="فتح قلم المعلمة" aria-controls="teacherPenPanel" aria-expanded="false" onclick="teacherTogglePanel()">✏️</button>
+<div id="teacherPenPanel" hidden role="group" aria-label="أدوات قلم المعلمة">
+ <div class="teacher-tools-row">
+  <button type="button" class="teacher-tool" data-tool="pen" aria-pressed="true" onclick="teacherSetTool('pen')">✏️ قلم</button>
+  <button type="button" class="teacher-tool" data-tool="highlight" aria-pressed="false" onclick="teacherSetTool('highlight')">🖍️ محدّد</button>
+  <button type="button" class="teacher-tool" data-tool="eraser" aria-pressed="false" onclick="teacherSetTool('eraser')">🧽 ممحاة</button>
+  <button type="button" class="teacher-close" onclick="teacherTogglePanel()" aria-label="إغلاق أدوات المعلمة">✕</button>
+ </div>
+ <div class="teacher-tools-row" aria-label="ألوان القلم">
+  <button type="button" class="teacher-swatch" data-color="#202020" aria-label="أسود" aria-pressed="true" style="background:#202020" onclick="teacherSetColor('#202020')"></button>
+  <button type="button" class="teacher-swatch" data-color="#db4d8d" aria-label="وردي" aria-pressed="false" style="background:#db4d8d" onclick="teacherSetColor('#db4d8d')"></button>
+  <button type="button" class="teacher-swatch" data-color="#377bd1" aria-label="أزرق" aria-pressed="false" style="background:#377bd1" onclick="teacherSetColor('#377bd1')"></button>
+  <button type="button" class="teacher-swatch" data-color="#e3b428" aria-label="أصفر" aria-pressed="false" style="background:#e3b428" onclick="teacherSetColor('#e3b428')"></button>
+ </div>
+ <div class="teacher-tools-row">
+  <button type="button" onclick="teacherUndo()">↶ تراجع</button>
+  <button type="button" onclick="teacherClear()">🗑️ مسح الكل</button>
+ </div>
+</div>
 <main>
 <section id="home" class="page">
 <div class="home-art">
@@ -169,12 +206,76 @@ nav button:hover,.link-btn:hover{background:#f3e3f3}
 </section>
 </main>
 <script>
+
+/* رسم بالماوس واللمس مع تراجع وممحاة حقيقية، ومسح تلقائي عند تغيير الصفحة */
+const teacherCanvas=document.getElementById('teacherDrawCanvas');
+const teacherCtx=teacherCanvas.getContext('2d');
+let teacherOpen=false,teacherTool='pen',teacherColor='#202020',teacherStrokes=[],teacherCurrent=null;
+let teacherWidth=0,teacherHeight=0;
+function teacherResize(){
+ const w=window.innerWidth,h=window.innerHeight,dpr=Math.min(window.devicePixelRatio||1,3);
+ teacherWidth=w;teacherHeight=h;teacherCanvas.width=Math.round(w*dpr);teacherCanvas.height=Math.round(h*dpr);
+ teacherCtx.setTransform(dpr,0,0,dpr,0,0);teacherRender();
+}
+function teacherRender(){
+ teacherCtx.clearRect(0,0,teacherWidth,teacherHeight);
+ for(const stroke of [...teacherStrokes,...(teacherCurrent?[teacherCurrent]:[])]){
+  if(!stroke.points.length)continue;
+  teacherCtx.save();
+  teacherCtx.globalCompositeOperation=stroke.tool==='eraser'?'destination-out':'source-over';
+  teacherCtx.globalAlpha=stroke.tool==='highlight'?.34:1;
+  teacherCtx.strokeStyle=stroke.color;teacherCtx.fillStyle=stroke.tool==='eraser'?'#000':stroke.color;
+  teacherCtx.lineWidth=stroke.tool==='eraser'?30:stroke.tool==='highlight'?22:3.5;
+  teacherCtx.lineCap='round';teacherCtx.lineJoin='round';
+  teacherCtx.beginPath();teacherCtx.moveTo(stroke.points[0].x*teacherWidth,stroke.points[0].y*teacherHeight);
+  for(const p of stroke.points.slice(1))teacherCtx.lineTo(p.x*teacherWidth,p.y*teacherHeight);
+  if(stroke.points.length===1){const p=stroke.points[0];teacherCtx.arc(p.x*teacherWidth,p.y*teacherHeight,teacherCtx.lineWidth/3,0,Math.PI*2);teacherCtx.fill();}
+  else teacherCtx.stroke();
+  teacherCtx.restore();
+ }
+}
+function teacherTogglePanel(){
+ teacherOpen=!teacherOpen;
+ document.getElementById('teacherPenPanel').hidden=!teacherOpen;
+ teacherCanvas.classList.toggle('teacher-drawing',teacherOpen);
+ const b=document.getElementById('teacherPenButton');b.setAttribute('aria-expanded',String(teacherOpen));b.setAttribute('aria-label',teacherOpen?'إغلاق قلم المعلمة':'فتح قلم المعلمة');
+}
+function teacherSetTool(tool){
+ teacherTool=tool;
+ document.querySelectorAll('#teacherPenPanel .teacher-tool').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tool===tool)));
+}
+function teacherSetColor(color){
+ teacherColor=color;
+ document.querySelectorAll('#teacherPenPanel .teacher-swatch').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.color===color)));
+}
+function teacherUndo(){if(teacherStrokes.length){teacherStrokes.pop();teacherRender();}}
+function teacherClear(){teacherStrokes=[];teacherCurrent=null;teacherRender();}
+function teacherPoint(e){const r=teacherCanvas.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height};}
+teacherCanvas.addEventListener('pointerdown',e=>{
+ if(!teacherOpen||e.button!==0)return;
+ e.preventDefault();teacherCanvas.setPointerCapture(e.pointerId);
+ teacherCurrent={tool:teacherTool,color:teacherColor,points:[teacherPoint(e)]};teacherRender();
+});
+teacherCanvas.addEventListener('pointermove',e=>{
+ if(!teacherCurrent)return;e.preventDefault();teacherCurrent.points.push(teacherPoint(e));teacherRender();
+});
+function teacherFinish(e){
+ if(!teacherCurrent)return;
+ if(e.type==='pointerup')teacherCurrent.points.push(teacherPoint(e));
+ teacherStrokes.push(teacherCurrent);teacherCurrent=null;teacherRender();
+}
+teacherCanvas.addEventListener('pointerup',teacherFinish);
+teacherCanvas.addEventListener('pointercancel',teacherFinish);
+window.addEventListener('resize',teacherResize);
+teacherResize();
+
 const names={objectives:'أهداف الدرس',modesty:'مواصفات اللباس الشرعي',traditions:'العادات والتقاليد',activity1:'النشاط الأول',activity2:'النشاط الثاني',season:'الموسم: الصيف والشتاء',activity3:'النشاط الثالث',age:'العمر',skin:'لون البشرة',body:'القوام',occasion:'المناسبة',applications:'التطبيقات العامة',objectives:'أهداف الدرس',activities:'أنشطة تفاعلية',religion:'لباسي من هدي ديني',identity:'زيي هويتي',index:'فهرس الدرس'};
 const lessonOrder=['objectives','modesty','traditions','activity1','activity2','season','activity3','age','skin','body','occasion','applications'];
 let currentSection='objectives';
 function goNext(){const i=lessonOrder.indexOf(currentSection);view(lessonOrder[Math.min(i+1,lessonOrder.length-1)]||'objectives');}
 function goPrevious(){const i=lessonOrder.indexOf(currentSection);view(i<=0?'rules':lessonOrder[i-1]);}
 function view(id){
+ teacherClear();
  if(id!=='home'&&id!=='rules')currentSection=id;
  try{localStorage.setItem('clothingCurrentPage',id);sessionStorage.setItem('clothingCurrentPage',id);}catch(e){}
  if(location.hash!==('#'+encodeURIComponent(id))){try{history.replaceState(null,'','#'+encodeURIComponent(id));}catch(e){location.hash=encodeURIComponent(id);}}
