@@ -94,8 +94,8 @@ function goNext(){const i=lessonOrder.indexOf(currentSection);view(lessonOrder[M
 function goPrevious(){const i=lessonOrder.indexOf(currentSection);view(i<=0?'rules':lessonOrder[i-1]);}
 function view(id){
  if(id!=='home'&&id!=='rules')currentSection=id;
- try{sessionStorage.setItem('clothingCurrentPage',id);}catch(e){}
- if(location.hash!==('#'+encodeURIComponent(id)))history.replaceState(null,'','#'+encodeURIComponent(id));
+ try{localStorage.setItem('clothingCurrentPage',id);sessionStorage.setItem('clothingCurrentPage',id);}catch(e){}
+ if(location.hash!==('#'+encodeURIComponent(id))){try{history.replaceState(null,'','#'+encodeURIComponent(id));}catch(e){location.hash=encodeURIComponent(id);}}
  const v=document.getElementById('video');v.pause();
  const target=(id==='home'||id==='rules')?id:'placeholder';
  for(const el of document.querySelectorAll('section.page'))el.hidden=el.id!==target;
@@ -108,12 +108,13 @@ const traditionDetails=['نحرص على أن تكون ملابسنا مناسب
 function showTradition(i){const el=document.getElementById('traditionsDetail');el.textContent=traditionDetails[i];el.hidden=false;}
 function toggleClothing(button){const answer=button.querySelector('.card-answer');const open=button.getAttribute('aria-expanded')==='true';button.setAttribute('aria-expanded',String(!open));answer.hidden=open;}
 function restart(){const v=document.getElementById('video');v.currentTime=0;v.play().catch(()=>{});}
-document.addEventListener('DOMContentLoaded',()=>{
+function restoreLessonPage(){
  const hash=decodeURIComponent(location.hash.slice(1));
- let stored='';try{stored=sessionStorage.getItem('clothingCurrentPage')||'';}catch(e){}
+ let stored='';try{stored=localStorage.getItem('clothingCurrentPage')||sessionStorage.getItem('clothingCurrentPage')||'';}catch(e){}
  const valid=['home','rules','index','activities','religion','identity',...lessonOrder];
  view(valid.includes(hash)?hash:(valid.includes(stored)?stored:'home'));
-});
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',restoreLessonPage);else restoreLessonPage();
 window.addEventListener('hashchange',()=>{
  const id=decodeURIComponent(location.hash.slice(1));
  if(['home','rules','index','activities','religion','identity',...lessonOrder].includes(id))view(id);
