@@ -69,6 +69,19 @@ nav button:hover,.link-btn:hover{background:#f3e3f3}
   </div>
   <div id="modestyDetail" class="modesty-detail" hidden role="status" aria-live="polite"></div>
 </div>
+<div id="traditionsContent" class="modesty-art-wrap" hidden>
+  <div class="modesty-art">
+    <img src="assets/traditions-approved.png" alt="منارا تعرض العادات والتقاليد واختلاف الملابس بين البلدان والمناطق">
+    <button class="modesty-hotspot modesty-first" onclick="showTradition(0)" aria-label="ملابسنا مناسبة لعادات وتقاليد مجتمعنا السعودي"></button>
+    <button class="modesty-hotspot modesty-second" onclick="showTradition(1)" aria-label="تختلف الملابس من بلد إلى آخر"></button>
+    <button class="modesty-hotspot modesty-third" onclick="showTradition(2)" aria-label="تختلف الملابس بين مناطق المملكة"></button>
+    <button class="modesty-hotspot modesty-fourth" onclick="showTradition(3)" aria-label="نحرص على الملابس المناسبة لقيم مجتمعنا"></button>
+    <button class="modesty-hotspot modesty-prev" onclick="goNext()" aria-label="التالي"></button>
+    <button class="modesty-hotspot modesty-home" onclick="view('home')" aria-label="الرئيسية"></button>
+    <button class="modesty-hotspot modesty-next" onclick="goPrevious()" aria-label="السابق"></button>
+  </div>
+  <div id="traditionsDetail" class="modesty-detail" hidden role="status" aria-live="polite"></div>
+</div>
 <div id="pendingContent" class="panel"><p>سيُضاف محتوى هذا القسم من الكتاب المدرسي المعتمد.</p></div>
 <nav aria-label="التنقل"><button onclick="view('home')">الرئيسية</button><button onclick="goPrevious()">السابق</button><button onclick="view('rules')">القوانين الصفية</button><button onclick="view('index')">الفهرس</button><button class="next-lesson-btn" onclick="goNext()">التالي ←</button></nav>
 </section>
@@ -84,11 +97,13 @@ function view(id){
  const v=document.getElementById('video');v.pause();
  const target=(id==='home'||id==='rules')?id:'placeholder';
  for(const el of document.querySelectorAll('section.page'))el.hidden=el.id!==target;
- if(target==='placeholder'){document.getElementById('sectionTitle').textContent=names[id]||'الدرس';document.getElementById('lessonIndex').hidden=id!=='index';document.getElementById('pendingContent').hidden=['index','objectives','modesty'].includes(id);document.getElementById('objectivesContent').hidden=id!=='objectives';document.getElementById('modestyContent').hidden=id!=='modesty';if(id==='modesty')document.getElementById('modestyDetail').hidden=true;}
+ if(target==='placeholder'){document.getElementById('sectionTitle').textContent=names[id]||'الدرس';document.getElementById('lessonIndex').hidden=id!=='index';document.getElementById('pendingContent').hidden=['index','objectives','modesty','traditions'].includes(id);document.getElementById('objectivesContent').hidden=id!=='objectives';document.getElementById('modestyContent').hidden=id!=='modesty';document.getElementById('traditionsContent').hidden=id!=='traditions';if(id==='traditions')document.getElementById('traditionsDetail').hidden=true;if(id==='modesty')document.getElementById('modestyDetail').hidden=true;}
  window.scrollTo(0,0);
 }
 const modestyConditions=['ساترًا للعورة','فضفاضًا واسعًا غير شفاف','بعيدًا عن التشبه بلباس الرجال','خاليًا من صور ذوات الأرواح'];
 function showModesty(i){const el=document.getElementById('modestyDetail');el.textContent='الشرط '+['الأول','الثاني','الثالث','الرابع'][i]+': '+modestyConditions[i];el.hidden=false;}
+const traditionDetails=['نحرص على أن تكون ملابسنا مناسبة لعادات وتقاليد مجتمعنا السعودي.','تختلف الملابس من بلد إلى آخر تبعًا لاختلاف العادات والتقاليد.','تختلف الملابس بين مناطق المملكة، وهي جزء من تراثنا الذي نعتز به.','نحافظ على تراث المملكة ونتعرّف إلى الأزياء الشعبية السعودية.'];
+function showTradition(i){const el=document.getElementById('traditionsDetail');el.textContent=traditionDetails[i];el.hidden=false;}
 function toggleClothing(button){const answer=button.querySelector('.card-answer');const open=button.getAttribute('aria-expanded')==='true';button.setAttribute('aria-expanded',String(!open));answer.hidden=open;}
 function restart(){const v=document.getElementById('video');v.currentTime=0;v.play().catch(()=>{});}
 document.addEventListener('DOMContentLoaded',()=>view('home'));
