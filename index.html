@@ -277,6 +277,7 @@ let currentSection='objectives';
 function goNext(){const i=lessonOrder.indexOf(currentSection);view(lessonOrder[Math.min(i+1,lessonOrder.length-1)]||'objectives');}
 function goPrevious(){if(['religion','identity','activities','index'].includes(currentSection)){view('home');return;}const i=lessonOrder.indexOf(currentSection);view(i<=0?'rules':lessonOrder[i-1]);}
 function view(id){
+ if(id==='activities')id='applications';
  teacherClear();
  if(id!=='home'&&id!=='rules')currentSection=id;
  try{localStorage.setItem('clothingCurrentPage',id);sessionStorage.setItem('clothingCurrentPage',id);}catch(e){}
