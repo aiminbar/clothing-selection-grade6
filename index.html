@@ -35,6 +35,7 @@ nav button:hover,.link-btn:hover{background:#f3e3f3}
 .applications-wrap{max-width:960px;margin:20px auto 32px;direction:rtl}.applications-intro,.applications-quiz,.applications-finish{background:#fffaf7;border:2px solid #e9c9e4;border-radius:22px;padding:24px;margin:18px auto;box-shadow:0 5px 0 #eddaed}.applications-intro p,.applications-quiz p{line-height:1.9}.applications-count{font-weight:700;color:#80508c}.applications-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}.applications-options button,.applications-next,.applications-restart{background:#fff;border:2px solid #d7aed4;color:#73447c;border-radius:16px;padding:15px;font:inherit;cursor:pointer}.applications-options button:disabled{cursor:default;opacity:.8}.applications-options button.selected-correct{background:#e8f7eb;border-color:#68a578;color:#275c39}.applications-options button.selected-wrong{background:#fff0f1;border-color:#c98791;color:#863d48}.applications-next,.applications-restart{background:#d67bb4;color:white;border-color:#d67bb4;font-weight:700}.applications-feedback{min-height:28px;font-weight:bold}.applications-finish{text-align:center}.applications-progress{height:12px;border-radius:20px;background:#f0ddea;overflow:hidden}.applications-progress>div{height:100%;background:#ca78b2;transition:width .2s}@media(max-width:600px){.applications-options{grid-template-columns:1fr}}
 
 .applications-wrap{position:relative}.lesson-voice-float{position:absolute;top:10px;left:12px;width:44px;height:44px;border-radius:50%;background:#fff9fc;border:1.5px solid #e5c6df;color:#7b5087;font-size:22px;display:grid;place-items:center;cursor:pointer;box-shadow:0 3px 8px #80508018;z-index:2}.lesson-voice-float:focus-visible{outline:3px solid #a76caa}.applications-intro{padding-left:64px}@media(max-width:600px){.lesson-voice-float{top:8px;left:8px;width:40px;height:40px}.applications-intro{padding-left:52px}}
+.lesson-voice-nav{border-radius:50%!important;min-width:43px;height:43px;padding:6px!important;font-size:20px!important;display:inline-grid;place-items:center;background:#fffafc!important;border:1.5px solid #dfb7d9!important}
 </style>
 </head>
 <body>
@@ -158,13 +159,13 @@ nav button:hover,.link-btn:hover{background:#f3e3f3}
 <div class="occasion-quiz"><h3>هيا نفكّر معًا 🌸</h3><p>أريد ملابس مريحة وقطنية لأرتديها في المنزل. أي نوع أختار؟</p><button type="button" onclick="answerOccasion(true)">ملابس المنزل 🏠</button><button type="button" onclick="answerOccasion(false)">ملابس الخروج 🌸</button><p id="occasionResult" class="occasion-result" aria-live="polite"></p><button type="button" onclick="document.getElementById('occasionResult').textContent=''">إعادة المحاولة ↶</button></div>
 </section>
 <section id="applicationsContent" class="applications-wrap" hidden dir="rtl">
-<button id="lessonVoiceToggle" type="button" onclick="toggleLessonVoice()" aria-pressed="true" aria-label="إيقاف أصوات التشجيع" title="التحكم بأصوات التشجيع" class="lesson-voice-float">🔊</button>
+
 <div class="applications-intro"><h2>🌸 التطبيقات العامة</h2><p>هيا نراجع ما تعلمناه في درس «اختيار الملابس» من خلال أسئلة قصيرة. اختاري الإجابة الصحيحة، وستظهر لكِ النتيجة في النهاية.</p></div>
 <div id="applicationsQuiz" class="applications-quiz"><p class="applications-count" id="applicationsCount"></p><div class="applications-progress" aria-hidden="true"><div id="applicationsProgress"></div></div><h3 id="applicationsQuestion"></h3><div class="applications-options" id="applicationsOptions"></div><p id="applicationsFeedback" class="applications-feedback" aria-live="polite"></p><button type="button" id="applicationsNext" class="applications-next" onclick="nextApplication()" hidden>السؤال التالي ←</button></div>
 <div id="applicationsFinish" class="applications-finish" hidden><h2>🎉 أحسنتِ!</h2><p id="applicationsScore" aria-live="polite"></p><p>اختيار الملابس المناسبة يجمع بين الستر والراحة ومراعاة المناسبة.</p><button type="button" class="applications-restart" onclick="startApplications()">إعادة المحاولة ↶</button></div>
 </section>
 <div id="pendingContent" class="panel"><p>سيُضاف محتوى هذا القسم من الكتاب المدرسي المعتمد.</p></div>
-<nav aria-label="التنقل"><button onclick="view('home')">الرئيسية</button><button onclick="goPrevious()">السابق</button><button onclick="view('rules')">القوانين الصفية</button><button onclick="view('index')">الفهرس</button><button id="nextLessonButton" class="next-lesson-btn" onclick="goNext()">التالي ←</button></nav>
+<nav aria-label="التنقل"><button id="lessonVoiceToggle" type="button" onclick="toggleLessonVoice()" aria-pressed="true" aria-label="إيقاف أصوات التشجيع" title="التحكم بأصوات التشجيع" class="lesson-voice-nav">🔊</button><button onclick="view('home')">الرئيسية</button><button onclick="goPrevious()">السابق</button><button onclick="view('rules')">القوانين الصفية</button><button onclick="view('index')">الفهرس</button><button id="nextLessonButton" class="next-lesson-btn" onclick="goNext()">التالي ←</button></nav>
 </section>
 </main>
 <script>
@@ -223,23 +224,24 @@ function selectSkinDress(button){const dress=document.getElementById('skinDress'
 function answerSkin(correct){lessonFeedbackVoice(correct);const feedback=document.getElementById('skinFeedback');feedback.textContent=correct?'أحسنتِ! 🌸 لكل طالبة ذوقها، ويمكننا احترام اختلاف الاختيارات.':'فكّري مرة أخرى 🌷 تختلف الأذواق، وليس من الضروري أن نختار جميعًا اللون نفسه.';document.querySelectorAll('.skin-answer button').forEach(b=>b.disabled=true);}
 function resetSkin(){document.querySelectorAll('.skin-answer button').forEach(b=>b.disabled=false);document.getElementById('skinFeedback').textContent='';}
 
-/* الأصوات المسجلة المعتمدة للتشجيع والمحاولة مجددًا */
+/* أصوات التشجيع المسجلة لجميع الأسئلة التفاعلية */
 let lessonVoiceEnabled=true;
-const lessonSounds={correct:new Audio('assets/correct.mp3'),retry:new Audio('assets/retry.mp3')};
-Object.values(lessonSounds).forEach(audio=>{audio.preload='auto';audio.volume=1;});
+let activeLessonAudio=null;
 function lessonFeedbackVoice(correct){
  if(!lessonVoiceEnabled)return;
  try{
-  Object.values(lessonSounds).forEach(audio=>{audio.pause();audio.currentTime=0;});
-  const audio=correct?lessonSounds.correct:lessonSounds.retry;
-  const result=audio.play();if(result&&typeof result.catch==='function')result.catch(()=>{});
- }catch(e){}
+  if(activeLessonAudio){activeLessonAudio.pause();activeLessonAudio=null;}
+  const audio=new Audio(new URL('assets/'+(correct?'correct.mp3':'retry.mp3'),document.baseURI).href);
+  audio.preload='auto';audio.volume=1;activeLessonAudio=audio;
+  const playing=audio.play();
+  if(playing&&typeof playing.catch==='function')playing.catch(err=>console.warn('Lesson audio:',err));
+ }catch(err){console.warn('Lesson audio:',err);}
 }
 function toggleLessonVoice(){
  lessonVoiceEnabled=!lessonVoiceEnabled;
  const b=document.getElementById('lessonVoiceToggle');
  if(b){b.textContent=lessonVoiceEnabled?'🔊':'🔇';b.setAttribute('aria-label',lessonVoiceEnabled?'إيقاف أصوات التشجيع':'تشغيل أصوات التشجيع');b.setAttribute('aria-pressed',String(lessonVoiceEnabled));}
- if(!lessonVoiceEnabled)Object.values(lessonSounds).forEach(audio=>{audio.pause();audio.currentTime=0;});
+ if(!lessonVoiceEnabled&&activeLessonAudio){activeLessonAudio.pause();activeLessonAudio=null;}
 }
 function answerOccasion(ok){lessonFeedbackVoice(ok);document.getElementById('occasionResult').textContent=ok?'أحسنتِ! ملابس المنزل مريحة وقطنية ومتنوعة الألوان. 🌷':'حاولي مرة أخرى، فكّري في الملابس المناسبة للراحة في المنزل.';}
 
